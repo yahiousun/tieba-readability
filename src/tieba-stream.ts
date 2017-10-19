@@ -1,6 +1,6 @@
 import { TiebaParser } from './tieba-parser';
 
-enum TIEBA_STREAM_EVENT {
+export enum TIEBA_STREAM_EVENT {
   DATA = 'data',
   TITLE = 'title',
   PAGE_COUNT = 'pagecount',
@@ -13,6 +13,7 @@ export type TIEBA_STREAM_EVENT_TYPE = 'data' | 'title' | 'pagecount' | 'post' | 
 export type TIEBA_STREAM_EVENT_LISTENER = (event?: any) => void;
 
 export class TiebaStream {
+  public static EVENT = TIEBA_STREAM_EVENT;
   private events: { [type: string]: Array<TIEBA_STREAM_EVENT_LISTENER> };
   private parser: TiebaParser;
   private emit(event, ...args) {
