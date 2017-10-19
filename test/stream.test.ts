@@ -1,4 +1,4 @@
-import { TiebaStream } from '../src/tieba-stream';
+import { TiebaStream } from '../src/stream';
 
 const TEST_URL = 'https://tieba.baidu.com/p/5346624244?see_lz=1';
 
@@ -9,14 +9,11 @@ describe('TiebaStream', function() {
       .then(res => res.text())
       .then((htmlString) => {
         const stream = new TiebaStream();
-        stream.on('title', (title) => {
-          console.log('title', title);
+        stream.on('metadata', (metadata) => {
+          console.log('metadata', metadata);
         });
-        stream.on('pagecount', (numberOfPages) => {
-          console.log('numberOfPages', numberOfPages);
-        });
-        stream.on('post', (post) => {
-          console.log('post', post.length);
+        stream.on('entry', (entry) => {
+          console.log('entry', entry);
         });
         stream.on('error', (error) => {
           console.log('error', error);

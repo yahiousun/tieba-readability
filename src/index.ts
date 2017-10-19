@@ -1,2 +1,3 @@
-export * from './tieba-parser';
-export * from './tieba-stream';
+export * from './thread';
+export * from './parser';
+export * from './stream';

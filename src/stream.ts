@@ -1,15 +1,14 @@
-import { TiebaParser } from './tieba-parser';
+import { TiebaParser } from './parser';
 
 export enum TIEBA_STREAM_EVENT {
   DATA = 'data',
-  TITLE = 'title',
-  PAGE_COUNT = 'pagecount',
-  POST = 'post',
+  ENTRY = 'entry',
   ERROR = 'error',
-  END = 'end'
+  END = 'end',
+  METADATA = 'metadata'
 }
 
-export type TIEBA_STREAM_EVENT_TYPE = 'data' | 'title' | 'pagecount' | 'post' | 'error' | 'end';
+export type TIEBA_STREAM_EVENT_TYPE = 'data' | 'metadata' | 'entry' | 'error' | 'end';
 export type TIEBA_STREAM_EVENT_LISTENER = (event?: any) => void;
 
 export class TiebaStream {
@@ -28,14 +27,11 @@ export class TiebaStream {
   constructor() {
     this.events = {};
     this.parser = new TiebaParser();
-    this.parser.ontitle = (title) => {
-      this.emit(TIEBA_STREAM_EVENT.TITLE, title);
+    this.parser.onentry = (post) => {
+      this.emit(TIEBA_STREAM_EVENT.ENTRY, post);
     }
-    this.parser.onpagecount = (pagecount) => {
-      this.emit(TIEBA_STREAM_EVENT.PAGE_COUNT, pagecount);
-    }
-    this.parser.onpost = (post) => {
-      this.emit(TIEBA_STREAM_EVENT.POST, post);
+    this.parser.onmetadata = (metadata) => {
+      this.emit(TIEBA_STREAM_EVENT.METADATA, metadata);
     }
     this.parser.onerror = () => {
       this.emit(TIEBA_STREAM_EVENT.ERROR);
