@@ -3,7 +3,8 @@ module.exports = function(config) {
     frameworks: ['jasmine', 'karma-typescript'],
     files: [
       { pattern: 'test/**/*.ts' },
-      { pattern: 'src/**/*.ts' }
+      { pattern: 'src/**/*.ts' },
+      { pattern: 'test/*.html', watched: true, included: false, served: true, nocache: false}
     ],
     preprocessors: {
       '**/*.ts': ['karma-typescript']
@@ -17,6 +18,9 @@ module.exports = function(config) {
         allowJs: true,
         lib: ['es2017', 'dom']
       }
+    },
+    proxies: {
+      "/test/": "http://localhost:8080/base/test/"
     },
     reporters: ['dots', 'karma-typescript'],
     browsers: ['Chrome_without_security'],

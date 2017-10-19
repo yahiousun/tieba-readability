@@ -1,12 +1,13 @@
 import { TiebaParser } from '../src/parser';
 
-const TEST_URL = 'https://tieba.baidu.com/p/5346624244?see_lz=1';
+const TEST_URL = 'http://localhost:9876/base/test/test.html';
 
 describe('TiebaParser', function() {
   it('parse thread', function(done) {
     fetch(TEST_URL)
       .then(res => res.text())
       .then((htmlString) => {
+        console.log(htmlString)
         const parser = new TiebaParser();
         parser.onmetadata = (metadata) => {
           done();

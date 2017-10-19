@@ -1,6 +1,6 @@
 import { TiebaStream } from '../src/stream';
 
-const TEST_URL = 'https://tieba.baidu.com/p/5346624244?see_lz=1';
+const TEST_URL = 'http://localhost:9876/base/test/test.html';
 
 describe('TiebaStream', function() {
   it('parse thread', function(done) {
