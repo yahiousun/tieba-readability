@@ -6,7 +6,8 @@ const TIEBA_THREAD_METADATA_REGEX = {
   CURRENT_PAGE_NUMBER: /<span\sclass=\"tP\">([^<]*)<\/span>/,
   CANONICAL_URL: /<link\srel=\"canonical\"\shref=\"(.*?)\"\/>/,
   NEXT_PAGE_URL: /<span\sclass=\"tP\">[^<]*<\/span>\n?<a\shref=\"([^>]*)\">\d+<\/a>/i,
-  THREAD_ID: /<a\sid=\"lzonly_cntn\"\shref=\"\/p\/(\d+)\?\"/
+  THREAD_ID: /<a\sid=\"lzonly_cntn\"\shref=\"\/p\/(\d+)\?\"/,
+  ABSOLUTE_URL: /(https?)?\/\/:/
 }
 
 export function getThreadTitle(html: string) {
@@ -35,8 +36,12 @@ export function getThreadId(html: string) {
 }
 
 export function getNextPageUrl(html: string) {
-  let nextPageUrl = TIEBA_THREAD_METADATA_REGEX.NEXT_PAGE_URL.exec(html);
-  return nextPageUrl && nextPageUrl[1];
+  let nextPageUrl: any = TIEBA_THREAD_METADATA_REGEX.NEXT_PAGE_URL.exec(html);
+  // Fix relative link
+  if (nextPageUrl && !TIEBA_THREAD_METADATA_REGEX.ABSOLUTE_URL.test(nextPageUrl[1])) {
+    nextPageUrl = `//tieba.baidu.com${nextPageUrl[1]}`
+  }
+  return nextPageUrl;
 }
 
 export class TiebaThreadMetadataResolver {

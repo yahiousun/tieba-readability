@@ -6,7 +6,9 @@ const TIEBA_THREAD_CONTENT_HANDLER_REGEX = {
   ENTRY_UPDATED: /<span\sclass=\"tail\-info\".*?<\/span>.*?<span\sclass=\"tail\-info\">(.*?)<\/span>/,
   AUTHOR_NAME: /class=\"d_name\"[^>]*>\s*<a[^>]*>(.*?)<\/a>/,
   AUTHOR_ID: /class=\"d_name\"\sdata-field=[^\d]*(\d*)[^>]*>/,
-  AUTHOR_AVATAR: /<img\susername[^>]*src=\"(.*?)\"\/>/
+  AUTHOR_AVATAR: /<img\susername[^>]*src=\"([^\"]*?)\"[^>]*?>/,
+  AUTHRO_AVATAR_LAZYLOAD: /<img\susername[^>]*data-tb-lazyload=\"([^\"]*?)\"[^>]*?>/,
+  IMG_SRC: /<img[^>]*src=\"(.*?)\"[^>]*>/g
 }
 
 export function getEntryLink(threadUrl: string, entryId: number) {
@@ -21,8 +23,12 @@ export function getEntryId(html: string) {
 }
 
 export function getEntryContent(html: string) {
-  let content = html.match(TIEBA_THREAD_CONTENT_HANDLER_REGEX.ENTRY_CONTENT);
-  return content && content[1].replace(TIEBA_THREAD_CONTENT_HANDLER_REGEX.LINK, '$1').trim();
+  let content: any = html.match(TIEBA_THREAD_CONTENT_HANDLER_REGEX.ENTRY_CONTENT);
+  // Remove all links
+  content = content[1].replace(TIEBA_THREAD_CONTENT_HANDLER_REGEX.LINK, '$1').trim();
+  // Strip all image attributes
+  content = content.replace(TIEBA_THREAD_CONTENT_HANDLER_REGEX.IMG_SRC, '<img src="$1">');
+  return content;
 }
 
 export function getEntryUpdated(html: string) {
@@ -39,8 +45,12 @@ export function getAuthorId(html: string) {
   const authorId = html.match(TIEBA_THREAD_CONTENT_HANDLER_REGEX.AUTHOR_ID);
   return authorId && +authorId[1];
 }
+
 export function getAuthorAvatar(html: string) {
-  const authorAvatar = html.match(TIEBA_THREAD_CONTENT_HANDLER_REGEX.AUTHOR_AVATAR);
+  let authorAvatar = html.match(TIEBA_THREAD_CONTENT_HANDLER_REGEX.AUTHRO_AVATAR_LAZYLOAD);
+  if (!authorAvatar) {
+    authorAvatar = html.match(TIEBA_THREAD_CONTENT_HANDLER_REGEX.AUTHOR_AVATAR);
+  }
   return authorAvatar && authorAvatar[1];
 }
 

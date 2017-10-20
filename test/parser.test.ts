@@ -7,7 +7,6 @@ describe('TiebaParser', function() {
     fetch(TEST_URL)
       .then(res => res.text())
       .then((htmlString) => {
-        console.log(htmlString)
         const parser = new TiebaParser();
         parser.onmetadata = (metadata) => {
           done();

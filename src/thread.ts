@@ -19,3 +19,8 @@ export interface TiebaThreadEntry {
   updated?: string;
   author?: TiebaThreadAuthor
 }
+
+export interface TiebaThreadObject extends TiebaThreadMetadata {
+  word_count?: number;
+  content: string;
+}

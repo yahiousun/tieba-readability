@@ -19,9 +19,6 @@ module.exports = function(config) {
         lib: ['es2017', 'dom']
       }
     },
-    proxies: {
-      "/test/": "http://localhost:8080/base/test/"
-    },
     reporters: ['dots', 'karma-typescript'],
     browsers: ['Chrome_without_security'],
     customLaunchers: {

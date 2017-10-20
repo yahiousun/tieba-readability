@@ -9,15 +9,9 @@ describe('TiebaStream', function() {
       .then(res => res.text())
       .then((htmlString) => {
         const stream = new TiebaStream();
-        stream.on('metadata', (metadata) => {
-          console.log('metadata', metadata);
-        });
-        stream.on('entry', (entry) => {
-          console.log('entry', entry);
-        });
-        stream.on('error', (error) => {
-          console.log('error', error);
-        });
+        stream.on('metadata', (metadata) => {});
+        stream.on('entry', (entry) => {});
+        stream.on('error', (error) => {});
         stream.write(htmlString);
 
         done();
