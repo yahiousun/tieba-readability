@@ -10,8 +10,8 @@ describe('TiebaParser', function() {
         const parser = new TiebaParser();
         parser.onmetadata = (metadata) => {
           done();
-        }
-        parser.src = htmlString;        
+        };
+        parser.src = htmlString;
       });
   });
 

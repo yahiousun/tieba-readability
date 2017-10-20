@@ -8,30 +8,30 @@ const TIEBA_THREAD_METADATA_REGEX = {
   NEXT_PAGE_URL: /<span\sclass=\"tP\">[^<]*<\/span>\n?<a\shref=\"([^>]*)\">\d+<\/a>/i,
   THREAD_ID: /<a\sid=\"lzonly_cntn\"\shref=\"\/p\/(\d+)\?\"/,
   ABSOLUTE_URL: /(https?)?\/\/:/
-}
+};
 
 export function getThreadTitle(html: string) {
-  let title = TIEBA_THREAD_METADATA_REGEX.THREAD_TITLE.exec(html);
+  const title = TIEBA_THREAD_METADATA_REGEX.THREAD_TITLE.exec(html);
   return title && title[1].trim();
 }
 
 export function getTotalNumberOfPages(html: string) {
-  let totalNumberOfPages = TIEBA_THREAD_METADATA_REGEX.NUMBER_OF_PAGES.exec(html);
+  const totalNumberOfPages = TIEBA_THREAD_METADATA_REGEX.NUMBER_OF_PAGES.exec(html);
   return totalNumberOfPages && +totalNumberOfPages[1];
 }
 
 export function getCurrentPageNumber(html: string) {
-  let currentPageNumber = TIEBA_THREAD_METADATA_REGEX.CURRENT_PAGE_NUMBER.exec(html);
+  const currentPageNumber = TIEBA_THREAD_METADATA_REGEX.CURRENT_PAGE_NUMBER.exec(html);
   return currentPageNumber && +currentPageNumber[1];
 }
 
 export function getCanonicalUrl(html: string) {
-  let canonicalUrl = TIEBA_THREAD_METADATA_REGEX.CANONICAL_URL.exec(html);
+  const canonicalUrl = TIEBA_THREAD_METADATA_REGEX.CANONICAL_URL.exec(html);
   return canonicalUrl && canonicalUrl[1];
 }
 
 export function getThreadId(html: string) {
-  let threadId = TIEBA_THREAD_METADATA_REGEX.THREAD_ID.exec(html);
+  const threadId = TIEBA_THREAD_METADATA_REGEX.THREAD_ID.exec(html);
   return threadId && +threadId[1];
 }
 

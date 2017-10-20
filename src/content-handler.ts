@@ -9,7 +9,7 @@ const TIEBA_THREAD_CONTENT_HANDLER_REGEX = {
   AUTHOR_AVATAR: /<img\susername[^>]*src=\"([^\"]*?)\"[^>]*?>/,
   AUTHRO_AVATAR_LAZYLOAD: /<img\susername[^>]*data-tb-lazyload=\"([^\"]*?)\"[^>]*?>/,
   IMG_SRC: /<img[^>]*src=\"(.*?)\"[^>]*>/g
-}
+};
 
 export function getEntryLink(threadUrl: string, entryId: number) {
   if (!threadUrl || !entryId) {

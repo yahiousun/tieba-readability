@@ -7,7 +7,7 @@ const TIEBA_PARSER_REGEX = {
   SPECIAL: /<(script|style)\b[^<]*(?:(?!<\/(script|style)>)<[^<]*)*<\/(script|style)>/g,
   LINE_FEED: /(\n|\r)/g,
   POST: /<div\sclass=\"l_post[^>]*>(.*?)j_lzl_container/g
-}
+};
 
 const MAX_ENTRY_COUNT = 100;
 const voidFunction = () => {};
@@ -40,9 +40,9 @@ export class TiebaParser {
     if (this.onmetadata) {
       this.onmetadata({ ...metadata });
     }
-    
-    //Get all posts
-    while(true && count < MAX_ENTRY_COUNT) {
+
+    // Get all posts
+    while (true && count < MAX_ENTRY_COUNT) {
       post = TIEBA_PARSER_REGEX.POST.exec(html);
       count ++;
       if (post && post[1]) {

@@ -17,7 +17,7 @@ export interface TiebaThreadEntry {
   id?: number;
   content: string;
   updated?: string;
-  author?: TiebaThreadAuthor
+  author?: TiebaThreadAuthor;
 }
 
 export interface TiebaThreadObject extends TiebaThreadMetadata {

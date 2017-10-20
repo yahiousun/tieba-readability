@@ -29,16 +29,16 @@ export class TiebaStream {
     this.parser = new TiebaParser();
     this.parser.onentry = (post) => {
       this.emit(TIEBA_STREAM_EVENT.ENTRY, post);
-    }
+    };
     this.parser.onmetadata = (metadata) => {
       this.emit(TIEBA_STREAM_EVENT.METADATA, metadata);
-    }
+    };
     this.parser.onerror = () => {
       this.emit(TIEBA_STREAM_EVENT.ERROR);
-    }
+    };
     this.parser.onend = () => {
       this.emit(TIEBA_STREAM_EVENT.END);
-    }
+    };
     this.on(TIEBA_STREAM_EVENT.DATA, (data: string) => {
       this.parser.src = data;
     });

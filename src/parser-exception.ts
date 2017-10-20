@@ -10,13 +10,13 @@ export enum TiebaParserErrorCode {
 
 export const TiebaParserErrorMessage = {
   [TiebaParserErrorCode.THREAD_NOT_FOUND]: 'Thread not found'
-}
+};
 
 export class TiebaParserException {
   public static threadNotFound(): TiebaParserError {
     return {
       code: TiebaParserErrorCode.THREAD_NOT_FOUND,
       message: TiebaParserErrorMessage[TiebaParserErrorCode.THREAD_NOT_FOUND]
-    }
+    };
   }
 }

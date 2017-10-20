@@ -4,7 +4,7 @@ import { TiebaThreadMetadata, TiebaThreadEntry, TiebaThreadObject } from './thre
 
 const TIEBA_READABILITY_REGEX = {
   HTML_TAGS: /(<([^>]+)>)/ig
-}
+};
 
 export class TiebaReadability {
   static count(html: string) {
@@ -29,7 +29,7 @@ export class TiebaReadability {
   }
   parse(html: string): TiebaThreadObject {
     this.stream.write(html);
-    let content: any = this.entries.reduce((previous, next, index) => {
+    const content: any = this.entries.reduce((previous, next, index) => {
       const section = next.content.split('<br>').map((line) => {
         return `<p>${line}</p>\n`;
       }).join('');
