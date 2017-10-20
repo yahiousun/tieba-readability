@@ -59,7 +59,7 @@ export class TiebaThreadContentHandler {
   constructor() {
     this.metadata;
   }
-  setMetadata(metadata) {
+  setMetadata(metadata: TiebaThreadMetadata) {
     this.metadata = { ...metadata };
   }
   resolve(html: string): TiebaThreadEntry {

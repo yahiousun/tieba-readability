@@ -15,7 +15,7 @@ export class TiebaStream {
   public static EVENT = TIEBA_STREAM_EVENT;
   private events: { [type: string]: Array<TIEBA_STREAM_EVENT_LISTENER> };
   private parser: TiebaParser;
-  private emit(event, ...args) {
+  private emit(event: TIEBA_STREAM_EVENT_TYPE, ...args: Array<any>) {
     let i, listeners;
     if (typeof this.events[event] === 'object') {
       listeners = this.events[event].slice();
