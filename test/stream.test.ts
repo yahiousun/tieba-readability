@@ -1,3 +1,4 @@
+import {} from 'jasmine';
 import { TiebaStream } from '../src/stream';
 
 const TEST_URL = 'http://localhost:9876/base/test/test.html';
@@ -12,7 +13,6 @@ describe('TiebaStream', function() {
         stream.on('entry', (entry) => {});
         stream.on('error', (error) => {});
         stream.write(htmlString);
-
         done();
       });
   });

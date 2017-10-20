@@ -1,3 +1,4 @@
+import {} from 'jasmine';
 import { TiebaParser } from '../src/parser';
 
 const TEST_URL = 'http://localhost:9876/base/test/test.html';
@@ -14,5 +15,4 @@ describe('TiebaParser', function() {
         parser.src = htmlString;
       });
   });
-
 });

@@ -21,6 +21,9 @@
   "devDependencies": {
     "@types/jasmine": "^2.6.0",
     "@types/jasminewd2": "^2.0.3",
+    "@types/node": "^8.0.46",
+    "@types/whatwg-fetch": "0.0.33",
+    "jasmine": "^2.8.0",
     "jasmine-core": "^2.8.0",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",

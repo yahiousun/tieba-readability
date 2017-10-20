@@ -16,7 +16,12 @@ module.exports = function(config) {
         emitDecoratorMetadata: true,
         experimentalDecorators: true,
         allowJs: true,
-        lib: ['es2017', 'dom']
+        lib: ['es2017', 'dom'],
+        types: [
+          'jasmine',
+          'jasminewd2',
+          'node'
+        ]
       }
     },
     reporters: ['dots', 'karma-typescript'],

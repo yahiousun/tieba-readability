@@ -1,3 +1,4 @@
+import {} from 'jasmine';
 import { TiebaReadability } from '../src/readability';
 
 const TEST_URL = 'http://localhost:9876/base/test/test.html';
