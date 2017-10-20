@@ -31,11 +31,14 @@ export class TiebaReadability {
     this.stream.write(html);
     const content: any = this.entries.reduce((previous, next, index) => {
       const section = next.content.split('<br>').map((line) => {
+        if (line.trim() === '') {
+          return '';
+        }
         return `<p>${line}</p>\n`;
       }).join('');
 
       if (index !== 0) {
-        return `${previous}<br>${section}`;
+        return `${previous}${section}`;
       }
       return section;
     }, '');
