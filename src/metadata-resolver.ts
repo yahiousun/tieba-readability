@@ -1,63 +1,176 @@
-import { TiebaThreadMetadata } from './thread';
+import { TiebaUserObject } from './author-handler';
+import { PostHandler } from './post-handler';
+import { OriginalPosterHandler } from './original-poster-handler';
+import { noprotocol, absolute } from './utilities';
 
-const TIEBA_THREAD_METADATA_REGEX = {
-  THREAD_TITLE: /<h3\sclass=\"core_title_txt[^>]*?>(.*?)<\/h3>/,
-  NUMBER_OF_PAGES: /<li\sclass=\"l_reply_num.*?<\/span>[^<]*?<span[^>]*?>(.*?)<\/span>/,
-  CURRENT_PAGE_NUMBER: /<span\sclass=\"tP\">([^<]*)<\/span>/,
-  CANONICAL_URL: /<link\srel=\"canonical\"\shref=\"(.*?)\"\/>/,
-  NEXT_PAGE_URL: /<span\sclass=\"tP\">[^<]*<\/span>\n?<a\shref=\"([^>]*)\">\d+<\/a>/i,
-  THREAD_ID: /<a\sid=\"lzonly_cntn\"\shref=\"\/p\/(\d+)\?\"/,
-  ABSOLUTE_URL: /(https?)?\/\/:/
-};
-
-export function getThreadTitle(html: string) {
-  const title = TIEBA_THREAD_METADATA_REGEX.THREAD_TITLE.exec(html);
-  return title && title[1].trim();
+export interface TiebaThreadMetadataObject {
+  id: number;
+  title: string;
+  url: string; // URL
+  page_count: number;
+  reply_count?: number;
+  author?: TiebaUserObject;
+  previous_page_url?: string;
+  next_page_url?: string;
+  first_page_url?: string;
+  last_page_url?: string;
+  summary?: string;
 }
 
-export function getTotalNumberOfPages(html: string) {
-  const totalNumberOfPages = TIEBA_THREAD_METADATA_REGEX.NUMBER_OF_PAGES.exec(html);
-  return totalNumberOfPages && +totalNumberOfPages[1];
+export interface MetadataResolverOptions {
+  generate_summary: boolean;
 }
 
-export function getCurrentPageNumber(html: string) {
-  const currentPageNumber = TIEBA_THREAD_METADATA_REGEX.CURRENT_PAGE_NUMBER.exec(html);
-  return currentPageNumber && +currentPageNumber[1];
-}
-
-export function getCanonicalUrl(html: string) {
-  const canonicalUrl = TIEBA_THREAD_METADATA_REGEX.CANONICAL_URL.exec(html);
-  return canonicalUrl && canonicalUrl[1];
-}
-
-export function getThreadId(html: string) {
-  const threadId = TIEBA_THREAD_METADATA_REGEX.THREAD_ID.exec(html);
-  return threadId && +threadId[1];
-}
-
-export function getNextPageUrl(html: string) {
-  let nextPageUrl: any = TIEBA_THREAD_METADATA_REGEX.NEXT_PAGE_URL.exec(html);
-  // Fix relative link
-  if (nextPageUrl && !TIEBA_THREAD_METADATA_REGEX.ABSOLUTE_URL.test(nextPageUrl[1])) {
-    nextPageUrl = `//tieba.baidu.com${nextPageUrl[1]}`
-  }
-  return nextPageUrl;
-}
-
-export class TiebaThreadMetadataResolver {
-  resolve(html: string): TiebaThreadMetadata {
-    const totalNumberOfPages = getTotalNumberOfPages(html);
-    const metadata: TiebaThreadMetadata = {
-      title: getThreadTitle(html),
-      page_count: totalNumberOfPages,
-      id: getThreadId(html),
-      link: getCanonicalUrl(html),
-      next_link: getNextPageUrl(html)
+export class MetadataResolver {
+  static get REGEX() {
+    return {
+      HTML: /(<([^>]+)>)/ig,
+      LINE_FEED: /(\n|\r)/g,
+      BR: /(<br(\\|\s)?>)/ig,
+      TITLE: /<h3[^>]*class="core_title_txt[^>]*?>(.*?)<\/h3>/,
+      PAGE_COUNT: /<li[^>]*class="l_reply_num.*?<\/span>[^<]*?<span[^>]*?>(.*?)<\/span>/,
+      REPLY_COUNT: /<li\sclass="l_reply_num"[^>]*><span[^>]*>(\d+)<\/span>/,
+      CANONICAL_URL: /<link[^>]*rel="canonical"[^>]*href="([^"]*)"/,
+      PREVIOUS_PAGE_URL: /<a\shref="([^>]*)">\d+<\/a>\n?<span[^>]*class="tP">[^<]*<\/span>/i,
+      NEXT_PAGE_URL: /<span[^>]*class="tP">[^<]*<\/span>\n?<a\shref="([^>]*)">\d+<\/a>/i,
+      ID: /<a\sid="lzonly_cntn"\shref="\/p\/(\d+)/,
     };
-
-    if (!metadata.title || !metadata.id) {
+  }
+  static get OPTIONS() {
+    return {
+      generate_summary: true
+    };
+  }
+  static get BASE_URL() {
+    return '//tieba.baidu.com';
+  }
+  static get SUMMARY_LENGTH_LIMIT() {
+    return 140;
+  }
+  static fixurl(url: string) {
+    let result;
+    if (!url) {
       return;
     }
-    return metadata;
+    result = noprotocol(url);
+    result = absolute(MetadataResolver.BASE_URL, url);
+    return result;
+  }
+  static extract(property: string, source: string) {
+    let match, result;
+    switch (property) {
+      case 'title': {
+        match = MetadataResolver.REGEX.TITLE.exec(source);
+        if (match && match[1]) {
+          result = match[1];
+        }
+        break;
+      }
+      case 'id': {
+        match = MetadataResolver.REGEX.ID.exec(source);
+        if (match && match[1]) {
+          result = +match[1];
+        }
+        break;
+      }
+      case 'page-count': {
+        match = MetadataResolver.REGEX.PAGE_COUNT.exec(source);
+        if (match && match[1]) {
+          result = +match[1];
+        }
+        break;
+      }
+      case 'reply-count': {
+        match = MetadataResolver.REGEX.REPLY_COUNT.exec(source);
+        if (match && match[1]) {
+          result = +match[1];
+        }
+        break;
+      }
+      case 'url': {
+        match = MetadataResolver.REGEX.CANONICAL_URL.exec(source);
+        if (match && match[1]) {
+          result = match[1];
+        }
+        break;
+      }
+      case 'previous-page-url': {
+        match = MetadataResolver.REGEX.PREVIOUS_PAGE_URL.exec(source);
+        if (match && match[1]) {
+          result = match[1];
+        }
+        break;
+      }
+      case 'next-page-url': {
+        match = MetadataResolver.REGEX.NEXT_PAGE_URL.exec(source);
+        if (match && match[1]) {
+          result = match[1];
+        }
+        break;
+      }
+      case 'author': {
+        result = OriginalPosterHandler.parse(source);
+        break;
+      }
+      default: {
+        return result;
+      }
+    }
+    return result;
+  }
+  private options: MetadataResolverOptions;
+  constructor(options?: MetadataResolverOptions) {
+    this.options = { ...MetadataResolver.OPTIONS, ...options };
+  }
+  parse(source: string): TiebaThreadMetadataObject {
+    const { generate_summary } = this.options;
+    const id = MetadataResolver.extract('id', source);
+    const title = MetadataResolver.extract('title', source);
+    const reply_count = MetadataResolver.extract('reply-count', source);
+    const page_count = MetadataResolver.extract('page-count', source);
+    const author = OriginalPosterHandler.parse(source);
+    let url = MetadataResolver.extract('url', source);
+    let previous_page_url = MetadataResolver.extract('previous-page-url', source);
+    let next_page_url = MetadataResolver.extract('next-page-url', source);
+    let metadata, opening, summary;
+
+    url = MetadataResolver.fixurl(url);
+    previous_page_url = MetadataResolver.fixurl(previous_page_url);
+    next_page_url = MetadataResolver.fixurl(next_page_url);
+
+    metadata = {
+      id,
+      title,
+      url,
+      reply_count,
+      page_count,
+      author,
+      previous_page_url,
+      next_page_url
+    };
+
+    if (generate_summary) {
+      // Get first post
+      opening = PostHandler.extract('content', source);
+      if (opening && opening.length) {
+        // Strip all links leave text
+        summary = opening.replace(PostHandler.REGEX.LINK, '$1');
+        summary = summary.replace(MetadataResolver.REGEX.LINE_FEED, '');
+        // Replace <br> with \n
+        summary = summary.replace(MetadataResolver.REGEX.BR, '\n');
+        // Strip all HTML tags
+        summary = summary.replace(MetadataResolver.REGEX.HTML, '');
+        // Strip extra spaces
+        summary = summary.trim();
+      }
+      if (summary !== '') {
+        metadata.summary = summary;
+      }
+    }
+
+    if (id && title) {
+      return metadata;
+    }
+    return;
   }
 }
