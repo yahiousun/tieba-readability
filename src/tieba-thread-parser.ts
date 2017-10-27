@@ -22,7 +22,7 @@ export class TiebaThreadParser {
       POST: /<div\sclass="l_post[^>]*>(.*?)j_lzl_container/g
     };
   }
-  private source: string;
+  private html: string;
   private options: TiebaPraserOptions;
   private resolver: MetadataResolver;
   private handler: PostHandler;
@@ -35,7 +35,7 @@ export class TiebaThreadParser {
     this.resolver = resolver || new MetadataResolver();
     this.handler = handler || new PostHandler();
   }
-  parse(source: string) {
+  set source(source: string) {
     const { original_poster_only, min_post_content_length, max_posts_limit } = this.options;
     const regex = TiebaThreadParser.REGEX;
     // Preprocess html
@@ -44,7 +44,7 @@ export class TiebaThreadParser {
       .replace(TiebaThreadParser.REGEX.LINE_FEED, '');
     const metadata = this.resolver.parse(html);
     let count = 0, post: TiebaThreadPostObject, match;
-    this.source = html;
+    this.html = html;
 
     if (!metadata) {
       this.onerror(new Error('Thread not found'));
@@ -85,5 +85,8 @@ export class TiebaThreadParser {
     if (this.onend && typeof this.onend === 'function') {
       this.onend();
     }
+  }
+  get source() {
+    return this.html
   }
 }

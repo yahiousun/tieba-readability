@@ -36,7 +36,7 @@ export class PostHandler {
   }
   static get REGEX() {
     return {
-      LINK: /<a.*?>([^>]*)<\/a>/g,
+      LINK: /<a[^>]*?>([^>]*)<\/a>/g,
       ID: /<div\sid="post_content_(\d+)"/,
       CONTENT: /<cc>.*?<div\sid="post_content_.*?>(.*?)<\/div>.*?<\/cc>/i,
       UPDATED: /<span[^>]*class="tail-info">(\d{4}-\d{2}-\d{2}[^/d]*?\d{2}:\d{2})<\/span>/,

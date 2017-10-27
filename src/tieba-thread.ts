@@ -34,7 +34,7 @@ export class TiebaThread {
   set source(html: string) {
     this.thread = { posts: [] };
     this.html = html;
-    this.parser.parse(html);
+    this.parser.source = html;
   }
   get source() {
     return this.html;

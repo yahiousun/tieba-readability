@@ -6,7 +6,9 @@
   "scripts": {
     "start": "npm run build && npm run watch",
     "prepublish": "npm run build",
-    "build": "tsc",
+    "build": "npm run build:assets && npm run build:typescript",
+    "build:typescript": "tsc",
+    "build:assets": "node scripts/copy-assets",
     "test": "karma start karma.conf.js --log-level debug --single-run",
     "watch": "karma start karma.conf.js"
   },
@@ -22,6 +24,7 @@
     "@types/jasmine": "^2.6.0",
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^8.0.46",
+    "del": "^3.0.0",
     "jasmine": "^2.8.0",
     "jasmine-core": "^2.8.0",
     "karma": "^1.7.1",

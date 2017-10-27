@@ -17,7 +17,7 @@ describe('TiebaThreadParser', function() {
           expect(post).toBeDefined();
         };
 
-        parser.parse(res);
+        parser.source = res;
 
         done();
       });

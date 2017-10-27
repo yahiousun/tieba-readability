@@ -18,7 +18,8 @@ export interface TiebaThreadMetadataObject {
 }
 
 export interface MetadataResolverOptions {
-  generate_summary: boolean;
+  generate_summary?: boolean;
+  max_summary_length?: number;
 }
 
 export class MetadataResolver {
@@ -38,14 +39,12 @@ export class MetadataResolver {
   }
   static get OPTIONS() {
     return {
-      generate_summary: true
+      generate_summary: true,
+      max_summary_length: 140
     };
   }
   static get BASE_URL() {
     return '//tieba.baidu.com';
-  }
-  static get SUMMARY_LENGTH_LIMIT() {
-    return 140;
   }
   static fixurl(url: string) {
     let result;
@@ -123,7 +122,7 @@ export class MetadataResolver {
     this.options = { ...MetadataResolver.OPTIONS, ...options };
   }
   parse(source: string): TiebaThreadMetadataObject {
-    const { generate_summary } = this.options;
+    const { generate_summary, max_summary_length } = this.options;
     const id = MetadataResolver.extract('id', source);
     const title = MetadataResolver.extract('title', source);
     const reply_count = MetadataResolver.extract('reply-count', source);
@@ -164,7 +163,7 @@ export class MetadataResolver {
         summary = summary.trim();
       }
       if (summary !== '') {
-        metadata.summary = summary;
+        metadata.summary = summary.substr(0, max_summary_length);
       }
     }
 
