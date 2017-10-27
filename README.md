@@ -1,7 +1,7 @@
 # tieba-readability
 [![Build Status](https://travis-ci.org/yahiousun/tieba-readability.svg?branch=master)](https://travis-ci.org/yahiousun/tieba-readability)
 
-A Baidu tieba scraping script
+百度贴吧脚本，将贴吧帖子转换为易读的markdown文档或JSON
 
 ## Getting started
 ### Installation
@@ -23,7 +23,7 @@ const thread = parser.parse(html): TiebaReadabilityObject;
 Custom parser  
 
 ``` javascript
-const parser = new TiebaThreadParser(options, medatadaResolver, postHandler);
+const parser = new TiebaThreadParser(options, metadataResolver, postHandler);
 
 parser.onmetadata = (metadata) => {
 	// handle metadata
