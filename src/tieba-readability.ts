@@ -39,7 +39,7 @@ export class TiebaReadability {
         } else if (TiebaReadability.REGEX.IMG.test(line)) {
           section.push(`![](${line.replace(TiebaReadability.REGEX.IMG, '$1')})`);
         } else {
-          section.push(`${line}  `);
+          section.push(`${line}\n`);
         }
       }
     });

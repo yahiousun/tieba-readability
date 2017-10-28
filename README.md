@@ -86,7 +86,7 @@ export interface TiebaThreadObject extends TiebaThreadMetadataObject {
   word_count: number;
 }
 ```
-贴吧 ```TiebaReadabilityObject ``` 对象  
+贴吧 ```TiebaReadability ``` 对象  
 
 ``` typescript
 interface TiebaReadabilityObject extends TiebaThreadObject {

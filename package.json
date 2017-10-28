@@ -9,6 +9,7 @@
     "build": "npm run build:assets && npm run build:typescript",
     "build:typescript": "tsc",
     "build:assets": "node scripts/copy-assets",
+    "build:sample": "node scripts/generate-sample",
     "test": "karma start karma.conf.js --log-level debug --single-run",
     "watch": "karma start karma.conf.js"
   },
