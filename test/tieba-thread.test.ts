@@ -1,7 +1,7 @@
 import {} from 'jasmine';
 import { TiebaThread } from '../src/tieba-thread';
 
-const TEST_URL = 'http://localhost:9876/base/test/test.html';
+const TEST_URL = 'http://localhost:9876/base/test/sample.html';
 
 describe('TiebaThread', function() {
   it('parse thread', function(done) {

@@ -1,7 +1,7 @@
 import {} from 'jasmine';
 import { TiebaReadability } from '../src/tieba-readability';
 
-const TEST_URL = 'http://localhost:9876/base/test/test.html';
+const TEST_URL = 'http://localhost:9876/base/test/sample.html';
 
 describe('TiebaReadability', function() {
   it('parse thread', function(done) {
@@ -11,6 +11,7 @@ describe('TiebaReadability', function() {
         const parser = new TiebaReadability();
         const thread = parser.parse(res);
         expect(thread).toBeDefined();
+        console.log('length', thread.content.length, thread);
         done();
       });
   });

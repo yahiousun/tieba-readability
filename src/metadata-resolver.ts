@@ -34,6 +34,8 @@ export class MetadataResolver {
       CANONICAL_URL: /<link[^>]*rel="canonical"[^>]*href="([^"]*)"/,
       PREVIOUS_PAGE_URL: /<a\shref="([^>]*)">\d+<\/a>\n?<span[^>]*class="tP">[^<]*<\/span>/i,
       NEXT_PAGE_URL: /<span[^>]*class="tP">[^<]*<\/span>\n?<a\shref="([^>]*)">\d+<\/a>/i,
+      FIRST_PAGE_URL: /<a href="([^>]*)">\u9996\u9875<\/a>/i,
+      LAST_PAGE_URL: /<a href="([^>]*)">\u5c3e\u9875<\/a>/i,
       ID: /<a\sid="lzonly_cntn"\shref="\/p\/(\d+)/,
     };
   }
@@ -107,6 +109,20 @@ export class MetadataResolver {
         }
         break;
       }
+      case 'first-page-url': {
+        match = MetadataResolver.REGEX.FIRST_PAGE_URL.exec(source);
+        if (match && match[1]) {
+          result = match[1];
+        }
+        break;
+      }
+      case 'last-page-url': {
+        match = MetadataResolver.REGEX.LAST_PAGE_URL.exec(source);
+        if (match && match[1]) {
+          result = match[1];
+        }
+        break;
+      }
       case 'author': {
         result = OriginalPosterHandler.parse(source);
         break;
@@ -131,11 +147,15 @@ export class MetadataResolver {
     let url = MetadataResolver.extract('url', source);
     let previous_page_url = MetadataResolver.extract('previous-page-url', source);
     let next_page_url = MetadataResolver.extract('next-page-url', source);
+    let first_page_url = MetadataResolver.extract('first-page-url', source);
+    let last_page_url = MetadataResolver.extract('last-page-url', source);
     let metadata, opening, summary;
 
     url = MetadataResolver.fixurl(url);
     previous_page_url = MetadataResolver.fixurl(previous_page_url);
     next_page_url = MetadataResolver.fixurl(next_page_url);
+    first_page_url = MetadataResolver.fixurl(first_page_url);
+    last_page_url = MetadataResolver.fixurl(last_page_url);
 
     metadata = {
       id,
@@ -145,7 +165,9 @@ export class MetadataResolver {
       page_count,
       author,
       previous_page_url,
-      next_page_url
+      next_page_url,
+      first_page_url,
+      last_page_url
     };
 
     if (generate_summary) {

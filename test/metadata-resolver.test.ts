@@ -1,7 +1,7 @@
 import {} from 'jasmine';
 import { MetadataResolver } from '../src/metadata-resolver';
 
-const TEST_URL = 'http://localhost:9876/base/test/test.html';
+const TEST_URL = 'http://localhost:9876/base/test/sample.html';
 
 describe('MetadataResolver', function() {
   it('parse metadata', function(done) {

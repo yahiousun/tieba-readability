@@ -13,7 +13,7 @@ const fs = require('fs');
 const del = require('del');
 const { TiebaReadability } = require('../dist/tieba-readability');
 
-let promise = Promise.resolve();
+let promise = Promise.resolve(), parser, thread;
 
 promise = promise.then(() => del(['SAMPLE.md']));
 
@@ -21,8 +21,8 @@ promise = promise.then(() => del(['SAMPLE.md']));
 promise = promise.then(() => {
   fs.readFile('./test/sample.html', 'utf8', function(err, data) {
     if (err) throw err;
-    const parser = new TiebaReadability();
-    const thread = parser.parse(data);
+    parser = new TiebaReadability();
+    thread = parser.parse(data);
     if (thread.content) {
       fs.writeFileSync('SAMPLE.md', thread.content, 'utf-8');
     }
