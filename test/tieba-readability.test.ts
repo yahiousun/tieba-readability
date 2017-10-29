@@ -8,10 +8,10 @@ describe('TiebaReadability', function() {
     fetch(TEST_URL)
       .then(res => res.text())
       .then((res) => {
-        const parser = new TiebaReadability();
+        const parser = new TiebaReadability({ strip_images: true });
         const thread = parser.parse(res);
+        expect(!/(<|>)/.test(thread.content)).toBeTruthy();
         expect(thread).toBeDefined();
-        console.log('length', thread.content.length, thread);
         done();
       });
   });

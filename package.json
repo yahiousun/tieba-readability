@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && npm run watch",
     "prepublish": "npm run build",
-    "build": "npm run build:assets && npm run build:typescript",
+    "build": "npm run build:assets && npm run build:typescript && npm run build:sample",
     "build:typescript": "tsc",
     "build:assets": "node scripts/copy-assets",
     "build:sample": "node scripts/generate-sample",

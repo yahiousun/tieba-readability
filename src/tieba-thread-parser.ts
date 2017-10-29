@@ -2,9 +2,9 @@ import { PostHandler, TiebaThreadPostObject } from './post-handler';
 import { MetadataResolver, TiebaThreadMetadataObject } from './metadata-resolver';
 
 export interface TiebaPraserOptions {
-  original_poster_only: boolean;
-  min_post_content_length: number;
-  max_posts_limit: number;
+  original_poster_only?: boolean;
+  min_post_content_length?: number;
+  max_posts_limit?: number;
 }
 
 export class TiebaThreadParser {
@@ -87,6 +87,6 @@ export class TiebaThreadParser {
     }
   }
   get source() {
-    return this.html
+    return this.html;
   }
 }

@@ -16,9 +16,6 @@
 
 6.同前几卷一样，有意向参与汉化工作的野生翻译菌，请私信联系我。
 
-![](https://imgsa.baidu.com/forum/w%3D580/sign=ac65d215d654564ee565e43183de9cde/7530bae93901213f5d3fa0da5fe736d12f2e954e.jpg)
-![](https://imgsa.baidu.com/forum/w%3D580/sign=ef1206625d4e9258a63486e6ac82d1d1/f9c98201213fb80e9ddd8fd13dd12f2eb938944e.jpg)
-![](https://imgsa.baidu.com/forum/w%3D580/sign=74ab682dbb51f819f1250342eab54a76/cdda5dcd7b899e51420ad41249a7d933c9950dd5.jpg)
 ### 第一章  魔皇亚达巴沃
 #### 1
 罗布尔圣王国是以里·耶斯提杰王国西南方位的半岛为领土的国家。

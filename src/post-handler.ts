@@ -6,7 +6,7 @@ export interface PostHandlerOptions {
   strip_images?: boolean;
   strip_small_images?: boolean;
   strip_stickers?: boolean;
-  strip_extra_spaces: boolean;
+  strip_extra_spaces?: boolean;
 }
 
 export interface TiebaThreadPostObject {
@@ -39,6 +39,7 @@ export class PostHandler {
       LINK: /<a[^>]*?>([^>]*)<\/a>/g,
       ID: /<div\sid="post_content_(\d+)"/,
       CONTENT: /<cc>.*?<div\sid="post_content_.*?>(.*?)<\/div>.*?<\/cc>/i,
+      CONTENT_BUBBLE: /<cc>.*?<div class="post_bubble_middle"[^>]*>(.*?)<\/div>.*?<\/cc>/,
       UPDATED: /<span[^>]*class="tail-info">(\d{4}-\d{2}-\d{2}[^/d]*?\d{2}:\d{2})<\/span>/,
       NUMBER: /<span[^>]*class="tail-info">(\d+)\u697c<\/span>/,
       STICKER: /<img[^>]*class="BDE_Smiley"[^>]*src="([^"]*)"[^>]*>/g,
@@ -56,7 +57,11 @@ export class PostHandler {
         break;
       }
       case 'content': {
-        match = PostHandler.REGEX.CONTENT.exec(source);
+        if (PostHandler.REGEX.CONTENT_BUBBLE.test(source)) {
+          match = PostHandler.REGEX.CONTENT_BUBBLE.exec(source);
+        } else {
+          match = PostHandler.REGEX.CONTENT.exec(source);
+        }
         if (match && match[1]) {
           result = match[1];
         }
@@ -106,6 +111,7 @@ export class PostHandler {
       // Strip all images
       if (strip_images) {
         content = content.replace(PostHandler.REGEX.IMAGE, '');
+        content = content.replace(PostHandler.REGEX.STICKER, '');
       } else {
         // Strip all Tieba Stickers
         if (strip_stickers) {

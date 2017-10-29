@@ -7,7 +7,8 @@ export interface TiebaThreadMetadataObject {
   id: number;
   title: string;
   url: string; // URL
-  page_count: number;
+  page_number?: number;
+  page_count?: number;
   reply_count?: number;
   author?: TiebaUserObject;
   previous_page_url?: string;
@@ -37,6 +38,7 @@ export class MetadataResolver {
       FIRST_PAGE_URL: /<a href="([^>]*)">\u9996\u9875<\/a>/i,
       LAST_PAGE_URL: /<a href="([^>]*)">\u5c3e\u9875<\/a>/i,
       ID: /<a\sid="lzonly_cntn"\shref="\/p\/(\d+)/,
+      CURRENT_PAGE_NUMBER: /<span[^>]*class="tP">([^<]*)<\/span>/
     };
   }
   static get OPTIONS() {
@@ -123,6 +125,13 @@ export class MetadataResolver {
         }
         break;
       }
+      case 'page-number': {
+        match = MetadataResolver.REGEX.CURRENT_PAGE_NUMBER.exec(source);
+        if (match && match[1]) {
+          result = +match[1];
+        }
+        break;
+      }
       case 'author': {
         result = OriginalPosterHandler.parse(source);
         break;
@@ -144,6 +153,7 @@ export class MetadataResolver {
     const reply_count = MetadataResolver.extract('reply-count', source);
     const page_count = MetadataResolver.extract('page-count', source);
     const author = OriginalPosterHandler.parse(source);
+    const page_number = MetadataResolver.extract('page-number', source) || 1;
     let url = MetadataResolver.extract('url', source);
     let previous_page_url = MetadataResolver.extract('previous-page-url', source);
     let next_page_url = MetadataResolver.extract('next-page-url', source);
@@ -161,6 +171,7 @@ export class MetadataResolver {
       id,
       title,
       url,
+      page_number,
       reply_count,
       page_count,
       author,

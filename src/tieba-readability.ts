@@ -1,13 +1,26 @@
-import { TiebaThread, TiebaThreadObject } from './tieba-thread';
+import { TiebaThreadParser } from './tieba-thread-parser';
+import { PostHandler } from './post-handler';
+import { TiebaThreadMetadataObject } from './metadata-resolver';
+import { TiebaThreadPostObject } from './post-handler';
 
-export interface TiebaReadabilityObject extends TiebaThreadObject {
+export interface TiebaReadabilityObject extends TiebaThreadMetadataObject {
+  word_count?: number;
   content: string;
 }
 
+export interface TiebaReadabilityOptions {
+  strip_images: boolean;
+}
+
 export class TiebaReadability {
+  static get OPTIONS() {
+    return {
+      strip_images: false
+    };
+  }
   static get REGEX() {
     return {
-      HTML_TAGS: /(<([^>]+)>)/ig,
+      HTML_TAGS: /(<([^>]+)>)/g,
       H3: /^\u7b2c.{1,4}\u7ae0/,
       H4: /^\d{1,2}$/,
       BLOCKQUOTE: /([^@]*@.*?)/,
@@ -45,23 +58,43 @@ export class TiebaReadability {
     });
     return section;
   }
-  private thread: TiebaThread;
-  constructor() {
-    this.thread = TiebaThread.create();
+  private parser: TiebaThreadParser;
+  private thread: { metadata?: TiebaThreadMetadataObject, posts?: Array<TiebaThreadPostObject> };
+  private options: TiebaReadabilityOptions;
+  constructor(options?: TiebaReadabilityOptions) {
+    this.options = { ...TiebaReadability.OPTIONS, ...options };
+    this.parser = new TiebaThreadParser(undefined, undefined, new PostHandler(this.options));
+    this.parser.onmetadata = (metadata) => {
+      this.thread.metadata = metadata;
+    };
+    this.parser.onpost = (post) => {
+      this.thread.posts.push(post);
+    };
   }
   parse(source: string): TiebaReadabilityObject {
-    this.thread.source = source;
-    const thread = this.thread.toJSON();
-    let content = [];
-    if (typeof thread === 'undefined') {
+    this.thread = { posts: [] };
+    this.parser.source = source;
+    const { metadata, posts } = this.thread;
+    let content = [], word_count;
+    if (typeof metadata === 'undefined') {
       throw new Error('Parser failure');
     }
-    thread.posts.forEach((post) => {
+    posts.forEach((post) => {
       content = content.concat(TiebaReadability.parse(post.content));
     });
     if (!content.length) {
       throw new Error('Content not found');
     }
-    return { ...thread, content: content.join('\n') };
+    word_count = posts
+      .slice()
+      .map(item => item.content.trim())
+      .join()
+      .replace(TiebaReadability.REGEX.HTML_TAGS, '')
+      .length;
+    return {
+      ...metadata,
+      word_count,
+      content: content.join('\n')
+    };
   }
 }

@@ -23,6 +23,8 @@ const thread = parser.parse(html): TiebaReadabilityObject;
 Custom parser  
 
 ``` javascript
+import { TiebaThreadParser } from 'tieba-readability';
+
 const parser = new TiebaThreadParser(options, metadataResolver, postHandler);
 
 parser.onmetadata = (metadata) => {
@@ -67,6 +69,7 @@ interface TiebaThreadMetadataObject {
   id: number; // Tieba thread id
   title: string; // Tieba thread title
   url: string; // Tieba thread url
+  page_number: number; // Current page number
   page_count: number; // Tieba thread total pages
   reply_count?: number; // Tieba thread total replies
   author?: TiebaUserObject; // Tieba thread original poster
@@ -77,19 +80,12 @@ interface TiebaThreadMetadataObject {
   summary?: string; // Tieba thread current page summary
 }
 ```
-贴吧 ```TiebaThread``` 对象
- 
-``` typescript
-export interface TiebaThreadObject extends TiebaThreadMetadataObject {
-  page_number: number;
-  posts: Array<TiebaThreadPostObject>;
-  word_count: number;
-}
-```
+
 贴吧 ```TiebaReadability ``` 对象  
 
 ``` typescript
-interface TiebaReadabilityObject extends TiebaThreadObject {
+interface TiebaReadabilityObject extends TiebaThreadMetadataObject {
+  word_count: number; // How many words
   content: string; // markdown string
 }
 ```
