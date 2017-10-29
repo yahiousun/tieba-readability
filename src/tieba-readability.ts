@@ -26,25 +26,48 @@ export class TiebaReadability {
       BLOCKQUOTE: /([^@]*@.*?)/,
       BLOCKQUOTE_AND_HR: /={3,}([^=]*)={3,}/,
       IMG: /<img[^>]*src="([^"]*)"[^>]*>/g,
-      HR: /={3,}/
+      HR: /={3,}/,
+      OL: /(^\d{1,2}\.)[^\d]/,
+      LINE_FEED: /\n/g
     };
   }
   static parse(content: string) {
     const section = [];
-    content.split('<br>').forEach((item, index, array) => {
-      const line = item.trim();
-      if (line !== '') {
+    content.split('<br>')
+      .filter(item => item.trim() !== '')
+      .forEach((item, index, array) => {
+        let line = item.trim(), previous = section[section.length - 1];
         if (
-          section.length > 0
-          && TiebaReadability.REGEX.BLOCKQUOTE.test(array[index - 1])
+          typeof previous !== 'undefined'
+          && TiebaReadability.REGEX.OL.test(previous)
+          && !TiebaReadability.REGEX.OL.test(line)
+        ) {
+          section.push('\n');
+        }
+        if (
+          typeof previous !== 'undefined'
+          && TiebaReadability.REGEX.BLOCKQUOTE.test(previous)
           && TiebaReadability.REGEX.HR.test(line)
         ) {
-          const last = section.pop().trim();
-          section.push(`> ${last}`);
-          section.push('-----');
+          previous = section.pop().replace(TiebaReadability.REGEX.LINE_FEED, '');
+          section.push(`> ${previous}`);
+          section.push('-----\n');
+        } else if (TiebaReadability.REGEX.OL.test(line)) {
+          if (
+            !TiebaReadability.REGEX.OL.test(previous)
+            && !TiebaReadability.REGEX.LINE_FEED.test(previous)
+          ) {
+            section[section.length - 1] = `${previous}\n`;
+          }
+          line = line.replace(TiebaReadability.REGEX.OL, (str, $1) => (`${$1} ${str.replace($1, '').trim()}`));
+          if (index === array.length - 1) {
+            section.push(`${line}\n`);
+          } else {
+            section.push(line);
+          }
         } else if (TiebaReadability.REGEX.BLOCKQUOTE_AND_HR.test(line)) {
           section.push(`> ${line.replace(TiebaReadability.REGEX.BLOCKQUOTE_AND_HR, '$1').trim()}`);
-          section.push('-----');
+          section.push('-----\n');
         } else if (TiebaReadability.REGEX.H3.test(line)) {
           section.push(`### ${line}`);
         } else if (TiebaReadability.REGEX.H4.test(line)) {
@@ -54,8 +77,7 @@ export class TiebaReadability {
         } else {
           section.push(`${line}\n`);
         }
-      }
-    });
+      });
     return section;
   }
   private parser: TiebaThreadParser;

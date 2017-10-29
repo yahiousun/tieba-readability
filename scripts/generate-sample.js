@@ -13,6 +13,7 @@ const fs = require('fs');
 const del = require('del');
 const TiebaReadability = require('../dist').default;
 const { PostHandler } = require('../dist/post-handler');
+const TEMPLATE = 'This file genereted by tieba-readability.  \n Original post [https://tieba.baidu.com/p/5346624244](https://tieba.baidu.com/p/5346624244)\n\n';
 
 let promise = Promise.resolve(), parser, thread;
 
@@ -25,7 +26,7 @@ promise = promise.then(() => {
     parser = new TiebaReadability({ strip_images: true });
     thread = parser.parse(data);
     if (thread.content) {
-      fs.writeFileSync('SAMPLE.md', thread.content, 'utf-8');
+      fs.writeFileSync('SAMPLE.md', `${TEMPLATE}${thread.content}`, 'utf-8');
     }
   });
 });
